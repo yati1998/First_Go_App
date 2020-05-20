@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"github.com/gorilla/mux"
 )
-
+// struct to store the student info
 type Student struct{
 	Id string `json:"id"`
 	Name string `json:"name"`
@@ -17,10 +17,12 @@ type Student struct{
 }
 
 var Students []Student
+//To print all the details of student
 func allDetails(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("All details endpoint")
 	json.NewEncoder(w).Encode(Students)
 }
+//return student details according to the id
 func returnSingleDetail(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := vars["id"]
@@ -31,7 +33,7 @@ func returnSingleDetail(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-
+//Function to create new details and append to the student struct
 func createNewDetails(w http.ResponseWriter, r *http.Request) {
 	// get the body of our POST request, unmarshal it into new student struct
 	// append this to our Students array
@@ -44,7 +46,7 @@ func createNewDetails(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(student)
 
 }
-
+//Function to delete the info according to the id
 func deleteStudent(w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -60,6 +62,7 @@ func deleteStudent(w http.ResponseWriter, r *http.Request){
 func homePage(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w, "Welcome to Home Page!")
 }
+
 func handleRequests() {
 
 	myRouter := mux.NewRouter().StrictSlash(true)
@@ -71,6 +74,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/student/{id}", returnSingleDetail)
 	log.Fatal(http.ListenAndServe(":5000",myRouter))
 }
+
 func main() {
 	Students = []Student{
 		Student{Id: "1", Name: "Yati", Subject: "Maths", Score: "99"},
