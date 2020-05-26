@@ -1,4 +1,4 @@
-FROM golang:alpine
+FROM golang:alpine AS builder
 
 RUN mkdir /app
 
@@ -8,8 +8,10 @@ WORKDIR /app
 
 RUN go mod download
 
-RUN go build -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./...
 
-Expose 5000
+FROM alpine:latest AS production
 
-CMD ["/app/main"]
+COPY --from=builder /app .
+
+CMD ["./main"]
